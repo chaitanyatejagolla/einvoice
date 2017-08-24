@@ -7,10 +7,14 @@ export default class Invoice extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
+            name: "",
+            email: "",
+            date: "",
             total: 0,
             lineItemCount: 1,
-            lineItemsArray: [{id: 0, amount: 0}]
+            lineItemsArray: [{id: 0,desc: "", amount: 0}]
         };
+        this._bind("onNameChange", "onEmailChange", "onDateChange", "addLineItem", "saveData")
     }
 
     render () {
@@ -23,23 +27,23 @@ export default class Invoice extends React.Component {
                 <div>
                     <label>
                             Name:
-                        <input type="text" name="name" />
+                        <input type="text" name="name" onChange={this.onNameChange} value={this.state.name}/>
                     </label>
                 </div>
                 <div>
                     <label>
                             Email:
-                        <input type="email" name="email" />
+                        <input type="email" name="email" onChange={this.onEmailChange} value={this.state.email}/>
                     </label>
                 </div>
                 <div>
                     <label>
                             Due Date:
-                        <input type="date" name="date" />
+                        <input type="date" name="date" onChange={this.onDateChange} value={this.state.date}/>
                     </label>
                 </div>
                 <div>
-                    <input type="button" name="add" value="Add" onClick={this.addLineItem.bind(this)}/>
+                    <input type="button" name="add" value="Add" onClick={this.addLineItem}/>
                 </div>
                 <div>
                     <label>
@@ -54,25 +58,54 @@ export default class Invoice extends React.Component {
                     </label>
                 </div>
                 <div>
-                    <SendButton />
+                    <input type="button" name="send" value="SEND" onClick={this.saveData}/>
                 </div>
             </div>
         );
     }
 
-    handleAmountChange(amt, id) {
+    _bind(...methods) {
+        methods.forEach(method => this[method] = this[method].bind(this));
+    }
+
+    onNameChange(event) {
+        this.setState({
+                name: event.target.value
+        });
+    }
+
+    onEmailChange(event) {
+        this.setState({
+                email: event.target.value
+        });
+    }
+
+    onDateChange(event) {
+        this.setState({
+                date: event.target.value
+        });
+    }
+
+    saveData() {
+        alert(this.state.name);
+    }
+
+    handleAmountChange(id, desc, amt) {
         let totalAmt = 0;
+        let tempArray = this.state.lineItemsArray;
         this.state.lineItemsArray.forEach(function(amountObj) {
             if(id === amountObj.id) {
                 if(amt === "") {
                     amt = 0;
                 }
                 amountObj.amount = amt; 
+                amountObj.desc = desc; 
             }
             totalAmt += parseInt(amountObj.amount); 
         });
         this.setState({
-            total: totalAmt
+            total: totalAmt,
+            lineItemsArray: tempArray
         });
     }
 
