@@ -25,7 +25,7 @@ export default class Invoice extends React.Component {
         return (
             <div>
                 <div>
-                    <label>
+                    <label className="inputLabel">
                             Name:
                         <input type="text" name="name" onChange={this.onNameChange} value={this.state.name}/>
                     </label>
