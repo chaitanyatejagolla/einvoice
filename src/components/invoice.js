@@ -21,9 +21,9 @@ export default class Invoice extends React.Component {
         return (
             <div>
                 <div>
-                    <label>
+                    <label className="inputLabel">
                             Name:
-                        <input type="text" name="name" />
+                        <input type="text" name="name" className="inputFields" />
                     </label>
                 </div>
                 <div>
