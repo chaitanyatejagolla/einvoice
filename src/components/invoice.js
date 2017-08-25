@@ -1,7 +1,7 @@
 import React from 'react';
 import LineItem from './lineitem';
 import SendButton from './sendButton';
-import Total from './total';
+var axios = require('axios');
 
 export default class Invoice extends React.Component {
     constructor (props) {
@@ -25,7 +25,7 @@ export default class Invoice extends React.Component {
         return (
             <div>
                 <div>
-                    <label className="inputLabel">
+                    <label>
                             Name:
                         <input type="text" name="name" onChange={this.onNameChange} value={this.state.name}/>
                     </label>
@@ -87,7 +87,10 @@ export default class Invoice extends React.Component {
     }
 
     saveData() {
-        alert(this.state.name);
+        axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
+        .then(function(response){
+          alert('saved successfully')
+        });
     }
 
     handleAmountChange(id, desc, amt) {
