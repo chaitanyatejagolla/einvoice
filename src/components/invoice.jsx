@@ -1,8 +1,9 @@
 import React from 'react';
-import LineItem from './lineitem';
+import LineItem from './lineitem.jsx';
+import TextFieldGroup from './common/textFieldGroup.jsx';
 var axios = require('axios');
 
-export default class Invoice extends React.Component {
+class Invoice extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -11,9 +12,10 @@ export default class Invoice extends React.Component {
             date: "",
             total: 0,
             lineItemCount: 1,
+            errors: {},
             lineItemsArray: [{id: 0, desc: "", amount: 0}]
         };
-        this._bind("onNameChange", "onEmailChange", "onDateChange", "addLineItem", "saveData")
+        this._bind("onChange", "addLineItem", "saveData")
     }
 
     render () {
@@ -23,35 +25,37 @@ export default class Invoice extends React.Component {
         };
 
         let lineItemsUI = [];
+        /* Looping through lineItemsArray for getting line item UI components */
         for (var i = 0; i < this.state.lineItemsArray.length; i += 1) {
-            lineItemsUI.push(<LineItem handleAmountChange={this.handleAmountChange.bind(this)} id={i}/>);
+            lineItemsUI.push(<LineItem handleLineItemChange={this.handleLineItemChange.bind(this)} id={i}/>);
         };
+
         return (
             <div className="container-fluid" style={style}>
-                <div className="form-group row">
-                    <div className="col-lg-1">
-                        <label> Name:</label>
-                    </div>
-                    <div className="col-lg-4">
-                        <input type="text" className="form-control" placeholder='Your name' name="name" onChange={this.onNameChange} value={this.state.name}/>
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <div className="col-lg-1">
-                        <label> Email:</label>
-                    </div>
-                    <div className="col-lg-4">
-                        <input type="email" className="form-control" placeholder='email' name="email" onChange={this.onEmailChange} value={this.state.email}/>
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <div className="col-lg-1">
-                        <label>Due Date:</label>
-                    </div>
-                    <div className="col-lg-4">
-                        <input type="date" className="form-control"  name="date" onChange={this.onDateChange} value={this.state.date}/>
-                    </div>
-                </div>
+                <TextFieldGroup
+                    label="Name: "
+                    onChange={this.onChange}
+                    value={this.state.name}
+                    placeholder="Your Name"
+                    field="name"
+                    type="text"
+                />
+                <TextFieldGroup
+                    label="Email: "
+                    onChange={this.onChange}
+                    value={this.state.email}
+                    placeholder="Your Email"
+                    field="email"
+                    type="email"
+                />
+                <TextFieldGroup
+                    label="Date: "
+                    onChange={this.onChange}
+                    value={this.state.date}
+                    placeholder="Date"
+                    field="date"
+                    type="date"
+                />
                 <div className="form-group row">
                     <div className="col-lg-8">
                         <label>Description</label>
@@ -60,7 +64,7 @@ export default class Invoice extends React.Component {
                         <label>Amount</label>
                     </div>
                 </div>
-                    {lineItemsUI}
+                {lineItemsUI}
                 <div className="form-group"> 
                     <button type="button" className="btn btn-info" name="add" onClick={this.addLineItem}>add</button>
                 </div>
@@ -82,28 +86,19 @@ export default class Invoice extends React.Component {
         );
     }
 
+    /* Utility method to bind all functions */
     _bind(...methods) {
         methods.forEach(method => this[method] = this[method].bind(this));
     }
 
-    onNameChange(event) {
+    /* On change handler for name, email and date components */
+    onChange(event) {
         this.setState({
-                name: event.target.value
+            [event.target.name]: event.target.value
         });
     }
 
-    onEmailChange(event) {
-        this.setState({
-                email: event.target.value
-        });
-    }
-
-    onDateChange(event) {
-        this.setState({
-                date: event.target.value
-        });
-    }
-
+    /* Posting data to node server using axios */
     saveData() {
         axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
         .then(function(response){
@@ -111,7 +106,8 @@ export default class Invoice extends React.Component {
         });
     }
 
-    handleAmountChange(id, desc, amt) {
+    /* Event handler for changes in line items */
+    handleLineItemChange(id, desc, amt) {
         let totalAmt = 0;
         let tempArray = this.state.lineItemsArray;
         this.state.lineItemsArray.forEach(function(amountObj) {
@@ -130,6 +126,7 @@ export default class Invoice extends React.Component {
         });
     }
 
+    /* Counter for line item array */
     addLineItem() {
         this.setState({
             lineItemCount: this.state.lineItemCount + 1
@@ -137,3 +134,5 @@ export default class Invoice extends React.Component {
         this.state.lineItemsArray.push({id: this.state.lineItemCount, amount: 0});
     }
 }
+
+export default Invoice;
