@@ -1,6 +1,5 @@
 import React from 'react';
 import LineItem from './lineitem';
-import SendButton from './sendButton';
 var axios = require('axios');
 
 export default class Invoice extends React.Component {
@@ -12,53 +11,72 @@ export default class Invoice extends React.Component {
             date: "",
             total: 0,
             lineItemCount: 1,
-            lineItemsArray: [{id: 0,desc: "", amount: 0}]
+            lineItemsArray: [{id: 0, desc: "", amount: 0}]
         };
         this._bind("onNameChange", "onEmailChange", "onDateChange", "addLineItem", "saveData")
     }
 
     render () {
+        var style = {
+            background: "#eee",
+            padding: "20px"
+        };
+
         let lineItemsUI = [];
         for (var i = 0; i < this.state.lineItemsArray.length; i += 1) {
             lineItemsUI.push(<LineItem handleAmountChange={this.handleAmountChange.bind(this)} id={i}/>);
         };
         return (
-            <div>
-                <div>
-                    <label>
-                            Name:
-                        <input type="text" name="name" onChange={this.onNameChange} value={this.state.name}/>
-                    </label>
+            <div className="container-fluid" style={style}>
+                <div className="form-group row">
+                    <div className="col-lg-1">
+                        <label> Name:</label>
+                    </div>
+                    <div className="col-lg-4">
+                        <input type="text" className="form-control" placeholder='Your name' name="name" onChange={this.onNameChange} value={this.state.name}/>
+                    </div>
                 </div>
-                <div>
-                    <label>
-                            Email:
-                        <input type="email" name="email" onChange={this.onEmailChange} value={this.state.email}/>
-                    </label>
+                <div className="form-group row">
+                    <div className="col-lg-1">
+                        <label> Email:</label>
+                    </div>
+                    <div className="col-lg-4">
+                        <input type="email" className="form-control" placeholder='email' name="email" onChange={this.onEmailChange} value={this.state.email}/>
+                    </div>
                 </div>
-                <div>
-                    <label>
-                            Due Date:
-                        <input type="date" name="date" onChange={this.onDateChange} value={this.state.date}/>
-                    </label>
+                <div className="form-group row">
+                    <div className="col-lg-1">
+                        <label>Due Date:</label>
+                    </div>
+                    <div className="col-lg-4">
+                        <input type="date" className="form-control"  name="date" onChange={this.onDateChange} value={this.state.date}/>
+                    </div>
                 </div>
-                <div>
-                    <input type="button" name="add" value="Add" onClick={this.addLineItem}/>
+                <div className="form-group row">
+                    <div className="col-lg-8">
+                        <label>Description</label>
+                    </div>
+                    <div className="col-lg-4">
+                        <label>Amount</label>
+                    </div>
                 </div>
-                <div>
-                    <label>
-                        Description
-                        Amount 
-                    </label>
                     {lineItemsUI}
+                <div className="form-group"> 
+                    <button type="button" className="btn btn-info" name="add" onClick={this.addLineItem}>add</button>
                 </div>
-                <div>
-                    <label>
-                        TOTAL   ${this.state.total}
-                    </label>
+                <div className="form-group row">
+                    <div className="col-lg-8">
+                    </div>
+                    <div className="col-lg-4"> 
+                       <label><strong>TOTAL   ${this.state.total.toFixed(2)}</strong></label>
+                    </div>
                 </div>
-                <div>
-                    <input type="button" name="send" value="SEND" onClick={this.saveData}/>
+                <div className="form-group row"> 
+                    <div className="col-lg-8">
+                    </div>
+                    <div className="col-lg-4"> 
+                        <button type="button" className="btn btn-light" onClick={this.saveData}>SEND</button>
+                    </div>
                 </div>
             </div>
         );
@@ -104,7 +122,7 @@ export default class Invoice extends React.Component {
                 amountObj.amount = amt; 
                 amountObj.desc = desc; 
             }
-            totalAmt += parseInt(amountObj.amount); 
+            totalAmt += parseFloat(amountObj.amount); 
         });
         this.setState({
             total: totalAmt,

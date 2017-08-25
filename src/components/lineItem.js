@@ -14,9 +14,13 @@ export default class LineItem extends React.Component {
     
     render () {
         return (
-            <div>
-                <input type="text" name="desc" onChange={this.onDescChange}/>
-                <input type="text" name="amount" onChange={this.onAmountChange}/>
+            <div className="form-group row">
+                <div className="col-lg-8">
+                    <input className="form-control" type="text" name="desc" onChange={this.onDescChange}/>
+                </div> 
+                <div className="col-lg-2">
+                    <input className="form-control" type="text" name="amount" onChange={this.onAmountChange}/>
+                </div>
             </div>
         );
     }
