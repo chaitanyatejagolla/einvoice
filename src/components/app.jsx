@@ -1,7 +1,7 @@
 import React from 'react';
-import Invoice from './invoice';
+import Invoice from './invoice.jsx';
 
-export default class App extends React.Component {
+class App extends React.Component {
     render () {
         return (
             <form>
@@ -13,3 +13,5 @@ export default class App extends React.Component {
         );
     }
 }
+
+export default App;
