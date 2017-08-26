@@ -1,6 +1,6 @@
 import React from 'react';
-import LineItem from './lineitem.jsx';
-import TextFieldGroup from './common/textFieldGroup.jsx';
+import LineItem from './lineItem.jsx';
+import InputLabelGroup from './common/inputLabelGroup.jsx';
 import { Form, FormGroup, FormControl, Button, Glyphicon } from 'react-bootstrap';
 var axios = require('axios');
 
@@ -11,6 +11,7 @@ class Invoice extends React.Component {
             name: "",
             email: "",
             date: "",
+            preview: false,
             nameError: "",
             emailError: "",
             dateError: "",
@@ -34,33 +35,39 @@ class Invoice extends React.Component {
             lineItemsUI.push(<LineItem handleLineItemChange={this.handleLineItemChange.bind(this)} key={i} id={i}/>);
         };
 
+        let previewStyle = {};
+        if (this.state.preview)
+            previewStyle.display = 'block';
+        else 
+            previewStyle.display = 'none';
+
         return (
             <Form onSubmit={this.saveData} style={style} >
-                <TextFieldGroup
+                <InputLabelGroup
                     label="Name: "
                     onChange={this.onChange}
                     error={this.state.nameError}
                     value={this.state.name}
                     placeholder="Your Name"
-                    field="name"
+                    name="name"
                     type="text"
                 />
-                <TextFieldGroup
+                <InputLabelGroup
                     label="Email: "
                     onChange={this.onChange}
                     error={this.state.emailError}
                     value={this.state.email}
                     placeholder="Your Email"
-                    field="email"
+                    name="email"
                     type="email"
                 />
-                <TextFieldGroup
+                <InputLabelGroup
                     label="Date: "
                     onChange={this.onChange}
                     error={this.state.dateError}
                     value={this.state.date}
                     placeholder="MM/DD/YYYY"
-                    field="date"
+                    name="date"
                     type="date"
                 />
                 <FormGroup>
@@ -95,8 +102,47 @@ class Invoice extends React.Component {
                         </div>
                     </div>
                 </FormGroup>
+                <div style={previewStyle}>
+                    {this.renderPreview()}
+                </div>
             </Form>
         );
+    }
+
+    renderPreview() {
+        var previewBoxStyle = {
+            position: "relative",
+            background: "#fafafa",
+            border: "1px solid #ddd",
+            padding: "40px 15px 20px",
+            margin: "10px 0",
+            color: "#333"
+        };
+
+        var previewTitleStyle = {
+            position: "absolute",
+            top: "0",
+            left: "0",
+            background: "#eee",
+            border: "1px solid #ddd",
+            padding: "5px 12px"
+        };
+
+        if (this.state) {
+        let htmlText = () => ({ __html: this.state.name });
+            return (
+                <div>
+                    <div style={previewBoxStyle}>
+                        <span className="preview-title">Preview</span>
+                        <div dangerouslySetInnerHTML={htmlText()}></div>
+                    </div>
+                    <button onClick={this.handleCloseClick}>
+                        Close
+                    </button>
+                </div>
+            );
+        }
+        return null;
     }
 
     validate(field, fieldValue) {
@@ -113,11 +159,11 @@ class Invoice extends React.Component {
 
     validateName(fieldValue) {
         let nameError = "";
-        if (fieldValue < 1) {
+        if (fieldValue.length < 1) {
             nameError = "Name is a required field";
         }
-        if (fieldValue > 30) {
-            nameError = "Name is too long -- 30 characters only";
+        if (fieldValue.length > 30) {
+            nameError = "Name is too long (30 characters only)";
         }
         this.setState({
             nameError: nameError
@@ -150,8 +196,6 @@ class Invoice extends React.Component {
         return (dateError.length < 1);
     }
 
-    
-
     /* Utility method to bind all functions */
     _bind(...methods) {
         methods.forEach(method => this[method] = this[method].bind(this));
@@ -168,25 +212,23 @@ class Invoice extends React.Component {
     /* Posting data to node server using axios */
     saveData(event) {
         event.preventDefault();
-        const err = this.validate("all");
-        if (!err) {
             // clear form
-            this.setState({
-                name: "",
-                email: "",
-                date: "",
-                nameError: "",
-                emailError: "",
-                dateError: "",
-                total: 0,
-                lineItemCount: 1,
-                lineItemsArray: [{id: 0, desc: "", amount: 0}]
-            });
-            axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
-            .then(response => {
-                alert('saved successfully')
-            });
-        }
+        this.setState({
+            name: "",
+            email: "",
+            date: "",
+            preview: true,
+            nameError: "",
+            emailError: "",
+            dateError: "",
+            total: 0,
+            lineItemCount: 1,
+            lineItemsArray: [{id: 0, desc: "", amount: 0}]
+        });
+        axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
+        .then(response => {
+            alert('saved successfully')
+        });
     }
 
     /* Event handler for changes in line items */
