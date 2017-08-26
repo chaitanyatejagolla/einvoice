@@ -6,13 +6,14 @@ const FormInput = ({ className, type, name, placeholder, onChange, value, error 
   return (
         <div className={className}>
             <FormControl 
-                type={value}
-                name={name} 
+                type={type}
+                name={name}
+                id = {name} 
                 placeholder={placeholder}
                 onChange={onChange} 
                 value={value}
             />
-            <ControlLabel>{error}</ControlLabel>
+            <ControlLabel htmlFor={name}>{error}</ControlLabel>
         </div>
     );
 }
@@ -21,8 +22,6 @@ FormInput.PropTypes = {
     name: PropTypes.string.isRequired,
     error: PropTypes.string,
     className: PropTypes.string.isRequired,
-    placeholder: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired
 }

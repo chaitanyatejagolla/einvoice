@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { FormGroup } from 'react-bootstrap';
 import FormInput from './formInput.jsx';
 import FormLabel from './formLabel.jsx';
 
 const InputLabelGroup = ({ name, value, label, type, error, onChange, placeholder }) => {
   return (
-        <FormGroup controlId="formValidationError1" validationState={error.length>0 ? 'error' : null}>
+        <FormGroup validationState={error.length>0 ? 'error' : null}>
             <div className="row">
                 <FormLabel
                     className = "col-lg-1"
@@ -15,7 +15,7 @@ const InputLabelGroup = ({ name, value, label, type, error, onChange, placeholde
                 <FormInput
                     className = "col-lg-4"
                     error= {error}
-                    type={value}
+                    type={type}
                     name={name} 
                     placeholder={placeholder}
                     onChange={onChange} 
@@ -29,7 +29,6 @@ const InputLabelGroup = ({ name, value, label, type, error, onChange, placeholde
 InputLabelGroup.PropTypes = {
     name: PropTypes.string.isRequired,
     error: PropTypes.string,
-    placeholder: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,

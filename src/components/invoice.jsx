@@ -1,7 +1,8 @@
 import React from 'react';
 import LineItem from './lineItem.jsx';
 import InputLabelGroup from './common/inputLabelGroup.jsx';
-import { Form, FormGroup, FormControl, Button, Glyphicon } from 'react-bootstrap';
+import FormLabel from './common/formLabel.jsx';
+import { Form, FormGroup, Button, Glyphicon } from 'react-bootstrap';
 var axios = require('axios');
 
 class Invoice extends React.Component {
@@ -66,18 +67,19 @@ class Invoice extends React.Component {
                     onChange={this.onChange}
                     error={this.state.dateError}
                     value={this.state.date}
-                    placeholder="MM/DD/YYYY"
                     name="date"
                     type="date"
                 />
                 <FormGroup>
                     <div className="row">
-                        <div className="col-lg-8">
-                            <label>Description</label>
-                        </div>
-                        <div className="col-lg-4">
-                            <label>Amount</label>
-                        </div>
+                        <FormLabel
+                            className = "col-lg-8"
+                            label = "Description" 
+                        />
+                        <FormLabel
+                            className = "col-lg-4"
+                            label = "Amount" 
+                        />
                     </div>
                 </FormGroup>
                 {lineItemsUI}
@@ -86,17 +88,19 @@ class Invoice extends React.Component {
                 </FormGroup>
                 <FormGroup>
                     <div className="row">
-                        <div className="col-lg-8">
-                        </div>
+                        <FormLabel
+                            className = "col-lg-8"
+                        />
                         <div className="col-lg-4"> 
-                        <label><strong>TOTAL   ${this.state.total.toFixed(2)}</strong></label>
+                            <label><strong>TOTAL   ${this.state.total.toFixed(2)}</strong></label>
                         </div>
                     </div>
                 </FormGroup>
                 <FormGroup>
                     <div className="row"> 
-                        <div className="col-lg-8">
-                        </div>
+                        <FormLabel
+                            className = "col-lg-8"
+                        />
                         <div className="col-lg-4"> 
                             <Button type="submit" className="btn btn-light">SEND</Button>
                         </div>
@@ -145,18 +149,18 @@ class Invoice extends React.Component {
         return null;
     }
 
+    /*Common Validation function*/
     validate(field, fieldValue) {
         if (field === "name") {
             return this.validateName(fieldValue);
-        } else if (field === "date") {
-            return this.validateDate(fieldValue);
         } else if (field === "email") {
             return this.validateEmail(fieldValue);
         } else {
-            return this.validateName(fieldValue) && this.validateDate(fieldValue) && this.validateEmail(fieldValue);
+            return this.validateName(fieldValue) && this.validateEmail(fieldValue);
         }
     };
 
+    /*Validation  function for name*/
     validateName(fieldValue) {
         let nameError = "";
         if (fieldValue.length < 1) {
@@ -172,6 +176,7 @@ class Invoice extends React.Component {
         return (nameError.length < 1);
     }
 
+    /*Validation function for email*/
     validateEmail(fieldValue) {
         let emailError = "";
         const emailReg = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -182,18 +187,6 @@ class Invoice extends React.Component {
             emailError: emailError
         });
         return (emailError.length < 1);
-    }
-
-    validateDate(fieldValue) {
-        let dateError = "";
-        var dateReg = /(0[1-9]|1[012])[- \/.](0[1-9]|[12][0-9]|3[01])[- \/.](19|20)\d\d/;
-        if (!dateReg.test(fieldValue)) {
-            dateError = "Please enter a valid date in MM/DD/YYYY format";
-        }
-        this.setState({
-            dateError: dateError
-        });
-        return (dateError.length < 1);
     }
 
     /* Utility method to bind all functions */
@@ -212,7 +205,11 @@ class Invoice extends React.Component {
     /* Posting data to node server using axios */
     saveData(event) {
         event.preventDefault();
-            // clear form
+        axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
+        .then(response => {
+            alert('saved successfully')
+        });
+        // clear form
         this.setState({
             name: "",
             email: "",
@@ -224,10 +221,6 @@ class Invoice extends React.Component {
             total: 0,
             lineItemCount: 1,
             lineItemsArray: [{id: 0, desc: "", amount: 0}]
-        });
-        axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
-        .then(response => {
-            alert('saved successfully')
         });
     }
 

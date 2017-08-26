@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormGroup, FormControl } from 'react-bootstrap';
+import FormInput from './common/formInput.jsx';
 
 class LineItem extends React.Component {
     constructor(props) {
@@ -18,16 +19,32 @@ class LineItem extends React.Component {
     
     render () {
         return (
-            <FormGroup>
-                <div className="row">
-                    <div className="col-lg-8">
-                        <FormControl type="text" name="desc" onChange={this.onChange} />
-                    </div> 
-                    <div className="col-lg-2">
-                        <FormControl type="text" name="amount" onChange={this.onChange} />
-                    </div>
+            <div className="row">
+                <div className = "col-lg-8">
+                    <FormGroup validationState={this.state.descError.length>0 ? 'error' : null}>
+                        <FormInput
+                            name = "desc"
+                            type = "text"
+                            onChange = {this.onChange}
+                            value = {this.state.desc}
+                            placeholder = "Description of Line Item"
+                            error = {this.state.descError}
+                        />
+                    </FormGroup>
                 </div>
-            </FormGroup>
+                <div className = "col-lg-2">
+                    <FormGroup validationState={this.state.amountError.length>0 ? 'error' : null}>
+                        <FormInput
+                            name = "amount"
+                            type = "number"
+                            onChange = {this.onChange}
+                            value = {this.state.amount}
+                            placeholder = "Amount"
+                            error = {this.state.amountError}
+                        />
+                    </FormGroup>
+                </div>
+            </div>
         );
     }
 
@@ -49,24 +66,36 @@ class LineItem extends React.Component {
         }
     }
 
+    /*Common Validation  Method*/
     validate(field, fieldValue) {
         if (field === "desc") {
             return this.validateDesc(fieldValue);
-        } else if (field === "amount") {
-            return this.validateAmount(fieldValue);
         } else {
-            return this.validateDesc(fieldValue) && this.validateAmount(fieldValue);
+            return this.validateAmount(parseFloat(fieldValue));
         }
     };
 
+    /* Validation for description */
     validateDesc(fieldValue) {
-        if (fieldValue.length > 120) {
-            nameError = "Description is too long (Maximum 120 Characters allowed)";
+        let descError = "";
+        if (fieldValue.length > 50) {
+            descError = "Description is too long (Maximum 50 Characters allowed)";
         }
+        this.setState({
+            descError: descError
+        });
     }
 
+    /* Validation for amount */
     validateAmount(fieldValue) {
-        
+        let amountError = "";
+        if (fieldValue > 9999999.99 || fieldValue < 1.00) {
+            amountError = "Amount range is 1.00 to 9999999.99";
+        }
+        this.setState({
+            amountError: amountError
+        });
+
     }
 }
 
