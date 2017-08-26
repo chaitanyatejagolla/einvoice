@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class LineItem extends React.Component {
     constructor(props) {
@@ -41,6 +42,11 @@ class LineItem extends React.Component {
             this.props.handleLineItemChange(this.props.id, this.state.desc, event.target.value);
         }
     }
+}
+
+LineItem.propTypes = {
+    id: PropTypes.number.isRequired,
+    handleLineItemChange: PropTypes.func.isRequired
 }
 
 export default LineItem;
