@@ -2,7 +2,7 @@ import React from 'react';
 import LineItem from './lineItem.jsx';
 import InputLabelGroup from './common/inputLabelGroup.jsx';
 import FormLabel from './common/formLabel.jsx';
-import { Form, FormGroup, Button, Glyphicon } from 'react-bootstrap';
+import { Form, FormGroup, Table, Button, Glyphicon } from 'react-bootstrap';
 var axios = require('axios');
 
 class Invoice extends React.Component {
@@ -71,38 +71,36 @@ class Invoice extends React.Component {
                     name="date"
                     type="date"
                 />
+
+                <Table responsive>
+                    <thead>
+                    <tr>
+                        <th className="col-xs-1">Item #</th>
+                        <th>Description</th>
+                        <th className="col-xs-4">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {lineItemsUI}
+                    </tbody>
+                </Table>
                 <FormGroup>
                     <div className="row">
-                        <FormLabel
-                            className = "col-lg-8"
-                            label = "Description" 
-                        />
-                        <FormLabel
-                            className = "col-lg-4"
-                            label = "Amount" 
-                        />
+                        <div className="col-xs-6">
+                            <Button onClick={this.addLineItem} bsSize="small"><Glyphicon glyph="glyphicon glyphicon-plus" /></Button>
+                        </div>
                     </div>
                 </FormGroup>
-                {lineItemsUI}
-                <FormGroup>
-                    <Button onClick={this.addLineItem} bsSize="small"><Glyphicon glyph="glyphicon glyphicon-plus" /></Button>
-                </FormGroup>
                 <FormGroup>
                     <div className="row">
-                        <FormLabel
-                            className = "col-lg-8"
-                        />
-                        <div className="col-lg-4"> 
+                        <div className="col-xs-offset-8"> 
                             <label><strong>TOTAL   ${this.state.total.toFixed(2)}</strong></label>
                         </div>
                     </div>
                 </FormGroup>
                 <FormGroup>
                     <div className="row"> 
-                        <FormLabel
-                            className = "col-lg-8"
-                        />
-                        <div className="col-lg-4"> 
+                        <div className="col-xs-offset-8"> 
                             <Button type="submit" className="btn btn-light">SEND</Button>
                         </div>
                     </div>
@@ -217,7 +215,7 @@ class Invoice extends React.Component {
     /* Posting data to node server using axios */
     saveData(event) {
         event.preventDefault();
-        if (this.validateEmail(this.state.email) && this.validateName(this.state.name) && this.state.lineItemValidation) {
+        if (this.validateEmail(this.state.email) && this.validateName(this.state.name) && this.validateDate(this.state.date) && this.state.lineItemValidation) {
             axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
         .then(response => {
             alert('saved successfully')
