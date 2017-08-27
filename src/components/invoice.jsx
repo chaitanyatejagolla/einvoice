@@ -16,6 +16,7 @@ class Invoice extends React.Component {
             nameError: "",
             emailError: "",
             dateError: "",
+            lineItemValidation: true,
             total: 0,
             lineItemCount: 1,
             lineItemsArray: [{id: 0, desc: "", amount: 0}]
@@ -153,10 +154,10 @@ class Invoice extends React.Component {
     validate(field, fieldValue) {
         if (field === "name") {
             return this.validateName(fieldValue);
-        } else if (field === "email") {
+        } else if (field === "email"){
             return this.validateEmail(fieldValue);
         } else {
-            return this.validateName(fieldValue) && this.validateEmail(fieldValue);
+            return this.validateDate(fieldValue);
         }
     };
 
@@ -172,7 +173,6 @@ class Invoice extends React.Component {
         this.setState({
             nameError: nameError
         });
-
         return (nameError.length < 1);
     }
 
@@ -187,6 +187,18 @@ class Invoice extends React.Component {
             emailError: emailError
         });
         return (emailError.length < 1);
+    }
+
+    /*Validation function for date*/
+    validateDate(fieldValue) {
+        let dateError = "";
+        if (fieldValue.length < 1) {
+            dateError = "Please enter a date";
+        }
+        this.setState({
+            dateError: dateError
+        });
+        return (dateError.length < 1);
     }
 
     /* Utility method to bind all functions */
@@ -205,32 +217,35 @@ class Invoice extends React.Component {
     /* Posting data to node server using axios */
     saveData(event) {
         event.preventDefault();
-        axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
+        if (this.validateEmail(this.state.email) && this.validateName(this.state.name) && this.state.lineItemValidation) {
+            axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
         .then(response => {
             alert('saved successfully')
         });
         // clear form
-        this.setState({
-            name: "",
-            email: "",
-            date: "",
-            preview: true,
-            nameError: "",
-            emailError: "",
-            dateError: "",
-            total: 0,
-            lineItemCount: 1,
-            lineItemsArray: [{id: 0, desc: "", amount: 0}]
-        });
+            this.setState({
+                name: "",
+                email: "",
+                date: "",
+                preview: true,
+                nameError: "",
+                emailError: "",
+                dateError: "",
+                lineItemValidation: true,
+                total: 0,
+                lineItemCount: 1,
+                lineItemsArray: [{id: 0, desc: "", amount: 0}]
+            });
+        }
     }
 
     /* Event handler for changes in line items */
-    handleLineItemChange(id, desc, amt) {
+    handleLineItemChange(id, desc, amt, lineItemValidation) {
         let totalAmt = 0;
         let tempArray = this.state.lineItemsArray;
         this.state.lineItemsArray.forEach(function(amountObj) {
             if(id === amountObj.id) {
-                if(amt === "") {
+                if(amt === "" || parseFloat(amt) < 0) {
                     amt = 0;
                 }
                 amountObj.amount = amt; 
@@ -240,6 +255,7 @@ class Invoice extends React.Component {
         });
         this.setState({
             total: totalAmt,
+            lineItemValidation: lineItemValidation,
             lineItemsArray: tempArray
         });
     }

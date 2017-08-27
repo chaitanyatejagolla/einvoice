@@ -58,11 +58,10 @@ class LineItem extends React.Component {
         this.setState({
             [event.target.name]: event.target.value
         });
-        this.validate(event.target.name, event.target.value);
         if (event.target.name === "desc") {
-            this.props.handleLineItemChange(this.props.id, event.target.value, this.state.amount);
+            this.props.handleLineItemChange(this.props.id, event.target.value, this.state.amount, this.validate(event.target.name, event.target.value));
         } else {
-            this.props.handleLineItemChange(this.props.id, this.state.desc, event.target.value);
+            this.props.handleLineItemChange(this.props.id, this.state.desc, event.target.value, this.validate(event.target.name, event.target.value));
         }
     }
 
@@ -84,6 +83,7 @@ class LineItem extends React.Component {
         this.setState({
             descError: descError
         });
+        return (descError.length < 1);
     }
 
     /* Validation for amount */
@@ -95,7 +95,7 @@ class LineItem extends React.Component {
         this.setState({
             amountError: amountError
         });
-
+        return (amountError.length < 1);
     }
 }
 
