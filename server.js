@@ -38,40 +38,44 @@ app.get('/', function (req, res) {
 
 
 app.post('/invoice/add', function (req,res) {
-	var response = [];
- 
+var response = [];
 	if (
 		typeof req.body.name !== 'undefined' && 
 		typeof req.body.email !== 'undefined' && 
-		typeof req.body.date !== 'undefined'
-	) {
-		var name = req.body.name, email = req.body.email, date = req.body.date;
- 
-		connection.query('INSERT INTO invoice (cust_name, cust_email, invoice_date) VALUES (?, ?, ?)', 
-			[name, email, date], 
-			function(err, result) {
-		  		if (!err){
- 
-					if (result.affectedRows != 0) {
-						response.push({'result' : 'success'});
-					} else {
-						response.push({'msg' : 'No Result Found'});
-					}
- 
-					res.setHeader('Content-Type', 'application/json');
-			    	res.status(200).send(JSON.stringify(response));
-		  		} else {
-				    res.status(400).send(err);
-			  	}
-			});
- 
+		typeof req.body.date !== 'undefined' &&
+		typeof req.body.lineItems !== 'undefined' &&
+		typeof req.body.total !== 'undefined'
+	){
+		var lineItemsUI = [];
+		var name = req.body.name, email = req.body.email, date = req.body.date, lineItems = req.body.lineItems, invoice_id, total = req.body.total;
+		
+		connection.query('INSERT INTO invoice (cust_name, cust_email, invoice_date, total) VALUES (?, ?, ?, ?)', [name, email, date, total], function(err, result) {
+			if (err)
+				console.log(err);
+			else {
+				console.log("Invoice item inserted");
+				invoice_id = result.insertId;
+				for(var i=0; i<lineItems.length; i++) {
+					var amount = parseFloat(lineItems[i].amount), description = lineItems[i].desc;
+					connection.query('INSERT INTO lineitem (description, amount, invoice_id) VALUES (?, ?, ?)', [description, amount, invoice_id], function(err, result) {
+						if (err)
+							console.log(err)
+						else
+							console.log("line items inserted");
+					});
+				}
+			}
+			res.setHeader('Content-Type', 'application/json');
+			res.status(200).send(JSON.stringify(response));
+		});
+
+		console.log("in ");
 	} else {
 		response.push({'result' : 'error', 'msg' : 'Please fill required details'});
 		res.setHeader('Content-Type', 'application/json');
-    	res.status(200).send(JSON.stringify(response));
+		res.status(200).send(JSON.stringify(response));
 	}
 });
-
 // Create server
 http.createServer(app).listen(app.get('port'), function(){
 console.log('Server listening on port ' + app.get('port'));
