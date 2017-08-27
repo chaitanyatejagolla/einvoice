@@ -2,7 +2,7 @@ import React from 'react';
 import LineItem from './lineItem.jsx';
 import InputLabelGroup from './common/inputLabelGroup.jsx';
 import { Form, FormGroup, ControlLabel, Table, Button, Glyphicon, Modal } from 'react-bootstrap';
-var axios = require('axios');
+import axios from 'axios';
 
 class Invoice extends React.Component {
     constructor (props) {
@@ -131,7 +131,7 @@ class Invoice extends React.Component {
             // /* Looping through lineItemsArray for getting line item UI components */
             let lineItemsPreview=[];
             for (var i = 0; i < this.state.lineItemsArray.length; i += 1) {
-                lineItemsPreview.push(<tr><td style={columnStyle}>{i+1}</td><td style={columnStyle}>{this.state.lineItemsArray[i].desc}</td><td style={columnStyle}>{this.state.lineItemsArray[i].amount}</td></tr>);
+                lineItemsPreview.push(<tr key={i+1}><td style={columnStyle}>{i+1}</td><td style={columnStyle}>{this.state.lineItemsArray[i].desc}</td><td style={columnStyle}>{this.state.lineItemsArray[i].amount}</td></tr>);
             };
 
             return (
