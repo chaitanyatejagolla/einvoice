@@ -1,8 +1,7 @@
 import React from 'react';
 import LineItem from './lineItem.jsx';
 import InputLabelGroup from './common/inputLabelGroup.jsx';
-import FormLabel from './common/formLabel.jsx';
-import { Form, FormGroup, Table, Button, Glyphicon } from 'react-bootstrap';
+import { Form, FormGroup, ControlLabel, Table, Button, Glyphicon, Modal } from 'react-bootstrap';
 var axios = require('axios');
 
 class Invoice extends React.Component {
@@ -21,43 +20,29 @@ class Invoice extends React.Component {
             lineItemCount: 1,
             lineItemsArray: [{id: 0, desc: "", amount: 0}]
         };
-        this._bind("onChange", "addLineItem", "saveData", "handlePreviewClick", "handleCloseClick")
+        this._bind("onChange", "addLineItem", "saveData", "renderForm", "renderPreview", "handleCloseClick")
     }
 
     render () {
-
-        let previewStyle = {};
-        if (this.state.preview)
-            previewStyle.display = 'block';
-        else 
-            previewStyle.display = 'none';
-
         return (
             <div>
                 <div>
                     {this.renderForm()}
                 </div>
-                <div style={previewStyle}>
+                <div>
                     {this.renderPreview()}
                 </div>
             </div>
         );
     }
 
-    handlePreviewClick(event) {
-        event.preventDefault();
-        this.setState({ 
-            preview: true 
-        });
-    }
-
     renderForm () {
         if (!this.state.preview) {
-            var style = {
-            background: "#eee",
-            padding: "20px",
-            margin: "20px"
-        };
+            const style = {
+                background: "#eee",
+                padding: "20px",
+                margin: "20px"
+            };
 
         let lineItemsUI = [];
         /* Looping through lineItemsArray for getting line item UI components */
@@ -94,11 +79,11 @@ class Invoice extends React.Component {
                     />
                     <Table responsive>
                         <thead>
-                        <tr>
-                            <th className="col-xs-1">Item #</th>
-                            <th>Description</th>
-                            <th className="col-xs-4">Amount</th>
-                        </tr>
+                            <tr>
+                                <th className="col-xs-1">Item #</th>
+                                <th>Description</th>
+                                <th className="col-xs-4">Amount</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {lineItemsUI}
@@ -125,13 +110,6 @@ class Invoice extends React.Component {
                             </div>
                         </div>
                     </FormGroup>
-                    <FormGroup>
-                        <div className="row"> 
-                            <div className="col-xs-offset-8"> 
-                                <Button className="btn btn-light" onClick={this.handlePreviewClick}>Preview</Button>
-                            </div>
-                        </div>
-                    </FormGroup>
                 </Form>
             )
         }
@@ -139,42 +117,63 @@ class Invoice extends React.Component {
     }
 
     renderPreview() {
-        var previewBoxStyle = {
-            position: "relative",
-            background: "#fafafa",
-            border: "1px solid #ddd",
-            padding: "40px 15px 20px",
-            margin: "10px 0",
-            color: "#333"
-        };
-
-        var previewTitleStyle = {
-            position: "absolute",
-            top: "0",
-            left: "0",
-            background: "#eee",
-            border: "1px solid #ddd",
-            padding: "5px 12px"
-        };
-
         if (this.state.preview) {
-            let preview = "<h1>Invoice</h1><style>table, th, td {border: 1px solid black;}</style><label>Name: "+this.state.name+"</label><br><label>Email: "+this.state.email+"</label><br><label>Date: "+this.state.date+"</label><br><br><br><table><tr><th>Item no</th><th>Description</th><th>Amount</th></tr>";
-            /* Looping through lineItemsArray for getting line item UI components */
-            let lineItems="";
-            for (var i = 0; i < this.state.lineItemsArray.length; i += 1) {
-                lineItems+="<tr><td>"+i+"</td><td>"+this.state.lineItemsArray[i].desc+"</td><td>"+this.state.lineItemsArray[i].amount+"</td></tr>";
+
+            const tableStyle = {
+                width: "100%"
             };
-            
-            let htmlText = () => ({ __html: preview+lineItems+"</table>" });
+
+            const columnStyle = {
+                border: "1px solid #dddddd",
+                padding: "8px"
+            }
+
+            // /* Looping through lineItemsArray for getting line item UI components */
+            let lineItemsPreview=[];
+            for (var i = 0; i < this.state.lineItemsArray.length; i += 1) {
+                lineItemsPreview.push(<tr><td style={columnStyle}>{i+1}</td><td style={columnStyle}>{this.state.lineItemsArray[i].desc}</td><td style={columnStyle}>{this.state.lineItemsArray[i].amount}</td></tr>);
+            };
+
             return (
                 <div>
-                    <div style={previewBoxStyle}>
-                        <span className="preview-title">Preview</span>
-                        <div dangerouslySetInnerHTML={htmlText()}></div>
-                    </div>
-                    <button onClick={this.handleCloseClick}>
-                        Close
-                    </button>
+                    <Modal
+                    {...this.props}
+                    bsSize="large"
+                    show={this.state.preview}
+                    onHide={this.handleCloseClick}
+                    dialogClassName="custom-modal"
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title id="contained-modal-title-lg">Preview Pane</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h1>INVOICE</h1>
+                        <FormGroup>
+                            <ControlLabel><strong>Name: </strong>{this.state.name}</ControlLabel>
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel><strong>Email: </strong>{this.state.email}</ControlLabel>
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel><strong>Date: </strong>{this.state.date}</ControlLabel>
+                        </FormGroup>
+                        <br/><br/><br/>
+                        <table style={tableStyle}>
+                            <tbody>
+                                <tr>
+                                    <th style={columnStyle}>Item no</th>
+                                    <th style={columnStyle}>Description</th>
+                                    <th style={columnStyle}>Amount</th>
+                                </tr>
+                                {lineItemsPreview}
+                            </tbody>
+                        </table><br/><br/><br/>
+                        <label><strong>TOTAL: </strong>{this.state.total}</label>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button onClick={this.handleCloseClick}>Close</Button>
+                    </Modal.Footer>
+                  </Modal>
                 </div>
             );
         }
@@ -183,8 +182,17 @@ class Invoice extends React.Component {
 
     handleCloseClick() {
         this.setState({
+            name: "",
+            email: "",
+            date: "",
             preview: false,
-            lineItemsArray: this.state.lineItemsArray
+            nameError: "",
+            emailError: "",
+            dateError: "",
+            lineItemValidation: true,
+            total: 0,
+            lineItemCount: 1,
+            lineItemsArray: [{id: 0, desc: "", amount: 0}]
         });
     }
 
@@ -260,26 +268,15 @@ class Invoice extends React.Component {
 
     /* Posting data to node server using axios */
     saveData(event) {
+        this.setState({
+            preview: true
+        });
         event.preventDefault();
         if (this.validateEmail(this.state.email) && this.validateName(this.state.name) && this.validateDate(this.state.date) && this.state.lineItemValidation) {
             axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date, lineItems: this.state.lineItemsArray, total: this.state.total })
         .then(response => {
-            alert('saved successfully')
+            console.log('saved successfully')
         });
-        // clear form
-            this.setState({
-                name: "",
-                email: "",
-                date: "",
-                preview: true,
-                nameError: "",
-                emailError: "",
-                dateError: "",
-                lineItemValidation: true,
-                total: 0,
-                lineItemCount: 1,
-                lineItemsArray: [{id: 0, desc: "", amount: 0}]
-            });
         }
     }
 
