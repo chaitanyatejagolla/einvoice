@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormGroup, FormControl } from 'react-bootstrap';
+import FormLabel from './common/formLabel.jsx';
 import FormInput from './common/formInput.jsx';
 
 class LineItem extends React.Component {
@@ -19,32 +20,44 @@ class LineItem extends React.Component {
     
     render () {
         return (
-            <div className="row">
-                <div className = "col-lg-8">
-                    <FormGroup validationState={this.state.descError.length>0 ? 'error' : null}>
-                        <FormInput
-                            name = "desc"
-                            type = "text"
-                            onChange = {this.onChange}
-                            value = {this.state.desc}
-                            placeholder = "Description of Line Item"
-                            error = {this.state.descError}
+                <tr>
+                    <td>
+                        <FormLabel
+                            label={this.props.id+1}
+                            className = "col-md-2 col-xs-1"
                         />
-                    </FormGroup>
-                </div>
-                <div className = "col-lg-2">
-                    <FormGroup validationState={this.state.amountError.length>0 ? 'error' : null}>
-                        <FormInput
-                            name = "amount"
-                            type = "number"
-                            onChange = {this.onChange}
-                            value = {this.state.amount}
-                            placeholder = "Amount"
-                            error = {this.state.amountError}
-                        />
-                    </FormGroup>
-                </div>
-            </div>
+                    </td>
+                    <td> 
+                        <FormGroup validationState={this.state.descError.length>0 ? 'error' : null}>
+                            <div className = "row">
+                                <FormInput
+                                    name = "desc"
+                                    type = "text"
+                                    className = "col-md-10"
+                                    onChange = {this.onChange}
+                                    value = {this.state.desc}
+                                    placeholder = ""
+                                    error = {this.state.descError}
+                                />
+                            </div>
+                        </FormGroup>
+                    </td>
+                    <td>  
+                        <FormGroup validationState={this.state.amountError.length>0 ? 'error' : null}>
+                        <div className = "row">
+                                <FormInput
+                                    name = "amount"
+                                    type = "number"
+                                    className = "col-xs-8"
+                                    onChange = {this.onChange}
+                                    value = {this.state.amount}
+                                    placeholder = ""
+                                    error = {this.state.amountError}
+                                />
+                            </div>
+                        </FormGroup>
+                    </td>
+                </tr>
         );
     }
 
@@ -89,7 +102,7 @@ class LineItem extends React.Component {
     /* Validation for amount */
     validateAmount(fieldValue) {
         let amountError = "";
-        if (fieldValue > 9999999.99 || fieldValue < 1.00) {
+        if (fieldValue > 9999999.99 || fieldValue < 0) {
             amountError = "Amount range is 1.00 to 9999999.99";
         }
         this.setState({
