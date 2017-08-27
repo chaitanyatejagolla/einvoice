@@ -262,7 +262,7 @@ class Invoice extends React.Component {
     saveData(event) {
         event.preventDefault();
         if (this.validateEmail(this.state.email) && this.validateName(this.state.name) && this.validateDate(this.state.date) && this.state.lineItemValidation) {
-            axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date})
+            axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date, lineItems: this.state.lineItemsArray, total: this.state.total })
         .then(response => {
             alert('saved successfully')
         });
