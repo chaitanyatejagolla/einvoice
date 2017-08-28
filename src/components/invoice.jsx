@@ -46,9 +46,9 @@ class Invoice extends React.Component {
 
         let lineItemsUI = [];
         /* Looping through lineItemsArray for getting line item UI components */
-        for (var i = 0; i < this.state.lineItemsArray.length; i += 1) {
-            lineItemsUI.push(<LineItem handleLineItemChange={this.handleLineItemChange.bind(this)} key={i} id={i}/>);
-        };
+        lineItemsUI = this.state.lineItemsArray.map((lineItem, index) =>
+            <LineItem handleLineItemChange={this.handleLineItemChange.bind(this)} key={index} id={index}/>
+        );
             return (
                 <Form onSubmit={this.saveData} style={style}>
                     <InputLabelGroup
@@ -130,9 +130,9 @@ class Invoice extends React.Component {
 
             // /* Looping through lineItemsArray for getting line item UI components */
             let lineItemsPreview=[];
-            for (var i = 0; i < this.state.lineItemsArray.length; i += 1) {
-                lineItemsPreview.push(<tr key={i+1}><td style={columnStyle}>{i+1}</td><td style={columnStyle}>{this.state.lineItemsArray[i].desc}</td><td style={columnStyle}>{this.state.lineItemsArray[i].amount}</td></tr>);
-            };
+            lineItemsPreview = this.state.lineItemsArray.map((lineItem, index) =>
+                <tr key={index+1}><td style={columnStyle}>{index+1}</td><td style={columnStyle}>{lineItem.desc}</td><td style={columnStyle}>{lineItem.amount}</td></tr>
+            );
 
             return (
                 <div>
@@ -239,7 +239,7 @@ class Invoice extends React.Component {
 
     /*Validation function for date*/
     validateDate(fieldValue) {
-        // const dateReg = /^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/;
+        // const dateReg =/^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d$/;
         let dateError = "";
         if (fieldValue.length < 1) {
             dateError = "Please enter a date";
@@ -268,15 +268,15 @@ class Invoice extends React.Component {
 
     /* Posting data to node server using axios */
     saveData(event) {
-        this.setState({
-            preview: true
-        });
         event.preventDefault();
         if (this.validateEmail(this.state.email) && this.validateName(this.state.name) && this.validateDate(this.state.date) && this.state.lineItemValidation) {
             axios.post('http://localhost:3000/invoice/add', { name: this.state.name, email: this.state.email, date: this.state.date, lineItems: this.state.lineItemsArray, total: this.state.total })
-        .then(response => {
-            console.log('saved successfully')
-        });
+            .then(response => {
+                console.log('saved successfully')
+            });
+            this.setState({
+                preview: true
+            });
         }
     }
 
