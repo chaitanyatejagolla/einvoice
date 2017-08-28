@@ -15,6 +15,7 @@ class Invoice extends React.Component {
             nameError: "",
             emailError: "",
             dateError: "",
+            totalError: "",
             lineItemValidation: true,
             total: 0,
             lineItemCount: 1,
@@ -44,11 +45,15 @@ class Invoice extends React.Component {
                 margin: "20px"
             };
 
-        let lineItemsUI = [];
-        /* Looping through lineItemsArray for getting line item UI components */
-        lineItemsUI = this.state.lineItemsArray.map((lineItem, index) =>
-            <LineItem handleLineItemChange={this.handleLineItemChange.bind(this)} key={index} id={index}/>
-        );
+            const errorStyle = {
+                color: "#a94442"
+            }
+
+            let lineItemsUI = [];
+            /* Looping through lineItemsArray for getting line item UI components */
+            lineItemsUI = this.state.lineItemsArray.map((lineItem, index) =>
+                <LineItem handleLineItemChange={this.handleLineItemChange.bind(this)} key={index} id={index}/>
+            );
             return (
                 <Form onSubmit={this.saveData} style={style}>
                     <InputLabelGroup
@@ -99,7 +104,14 @@ class Invoice extends React.Component {
                     <FormGroup>
                         <div className="row">
                             <div className="col-xs-offset-8"> 
-                                <label><strong>TOTAL   ${this.state.total.toFixed(2)}</strong></label>
+                                <label><strong>TOTAL   ${this.state.total.toFixed(2).toString().slice(0,7)}</strong></label>
+                            </div>
+                        </div>
+                    </FormGroup>
+                    <FormGroup>
+                        <div className="row">
+                            <div className="col-xs-offset-8"> 
+                                <label style={errorStyle}>{this.state.totalError}</label>
                             </div>
                         </div>
                     </FormGroup>
@@ -128,7 +140,7 @@ class Invoice extends React.Component {
                 padding: "8px"
             }
 
-            // /* Looping through lineItemsArray for getting line item UI components */
+            // /* Looping through lineItemsArray for getting line item preview components */
             let lineItemsPreview=[];
             lineItemsPreview = this.state.lineItemsArray.map((lineItem, index) =>
                 <tr key={index+1}><td style={columnStyle}>{index+1}</td><td style={columnStyle}>{lineItem.desc}</td><td style={columnStyle}>{lineItem.amount}</td></tr>
@@ -168,7 +180,7 @@ class Invoice extends React.Component {
                                 {lineItemsPreview}
                             </tbody>
                         </table><br/><br/><br/>
-                        <label><strong>TOTAL: </strong>{this.state.total}</label>
+                        <label><strong>TOTAL: </strong>${this.state.total.toFixed(2)}</label>
                     </Modal.Body>
                     <Modal.Footer>
                       <Button onClick={this.handleCloseClick}>Close</Button>
@@ -189,6 +201,7 @@ class Invoice extends React.Component {
             nameError: "",
             emailError: "",
             dateError: "",
+            totalError: "",
             lineItemValidation: true,
             total: 0,
             lineItemCount: 1,
@@ -285,17 +298,19 @@ class Invoice extends React.Component {
         let totalAmt = 0;
         let tempArray = this.state.lineItemsArray;
         this.state.lineItemsArray.forEach(function(amountObj) {
-            if(id === amountObj.id) {
-                if(amt === "" || parseFloat(amt) < 0) {
+            if (id === amountObj.id) {
+                if (amt === "" || parseFloat(amt) < 0) {
                     amt = 0;
                 }
                 amountObj.amount = amt; 
                 amountObj.desc = desc; 
             }
-            totalAmt += parseFloat(amountObj.amount); 
+            totalAmt += parseFloat(amountObj.amount);
+            
         });
         this.setState({
             total: totalAmt,
+            totalError: totalAmt > 9999999.99 ? "Total cannot be more than 9999999.99" : "",
             lineItemValidation: lineItemValidation,
             lineItemsArray: tempArray
         });
