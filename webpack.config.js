@@ -12,6 +12,20 @@ module.exports = {
         path: path.join(__dirname, 'public'),
         filename: 'bundle.js'
     },
+    externals: {
+        'cheerio': 'window',
+        'react/addons': true,
+        'react/lib/ExecutionEnvironment': true,
+        'react/lib/ReactContext': true
+      },
+    resolve: {
+        modules: [__dirname, 'node_modules'],
+        alias:{
+            invoice: 'src/components/invoice.jsx',
+            lineItem:'src/components/lineItem.jsx'
+        },
+        extensions: ['*', '.js', '.json', '.jsx']
+    },
     module: {
         loaders: [
         {

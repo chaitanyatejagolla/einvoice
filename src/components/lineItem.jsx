@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, FormControl } from 'react-bootstrap';
+import { FormGroup } from 'react-bootstrap';
 import FormLabel from './common/formLabel.jsx';
 import FormInput from './common/formInput.jsx';
 
@@ -44,7 +44,7 @@ class LineItem extends React.Component {
                     </td>
                     <td>  
                         <FormGroup validationState={this.state.amountError.length>0 ? 'error' : null}>
-                        <div className = "row">
+                            <div className = "row">
                                 <FormInput
                                     name = "amount"
                                     type = "number"

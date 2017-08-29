@@ -21,7 +21,7 @@ class Invoice extends React.Component {
             lineItemCount: 1,
             lineItemsArray: [{id: 0, desc: "", amount: 0}]
         };
-        this._bind("onChange", "addLineItem", "saveData", "renderForm", "renderPreview", "handleCloseClick")
+        this._bind("onChange", "addLineItem", "saveData", "renderForm", "handleLineItemChange", "renderPreview", "handleCloseClick")
     }
 
     render () {
@@ -52,8 +52,9 @@ class Invoice extends React.Component {
             let lineItemsUI = [];
             /* Looping through lineItemsArray for getting line item UI components */
             lineItemsUI = this.state.lineItemsArray.map((lineItem, index) =>
-                <LineItem handleLineItemChange={this.handleLineItemChange.bind(this)} key={index} id={index}/>
+                <LineItem handleLineItemChange={this.handleLineItemChange} key={index} id={index}/>
             );
+
             return (
                 <Form onSubmit={this.saveData} style={style}>
                     <InputLabelGroup
