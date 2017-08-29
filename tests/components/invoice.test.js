@@ -34,6 +34,10 @@ describe('Running tests on <Invoice /> component', () => {
     it("should have a <Table /> component", () => {
         expect(wrapper.find(Table).length).toEqual(1);
     });
+
+    it("should have a <Table /> component", () => {
+        expect(wrapper.find(Table).length).toEqual(1);
+    });
   
     // it('should render children when passed in', () => {
     //   const wrapper = shallow((
