@@ -18,7 +18,6 @@ class Invoice extends React.Component {
             totalError: "",
             lineItemValidation: true,
             total: 0,
-            lineItemCount: 1,
             lineItemsArray: [{id: 0, desc: "", amount: 0}]
         };
         this._bind("onChange", "addLineItem", "saveData", "renderForm", "handleLineItemChange", "renderPreview", "handleCloseClick")
@@ -205,7 +204,6 @@ class Invoice extends React.Component {
             totalError: "",
             lineItemValidation: true,
             total: 0,
-            lineItemCount: 1,
             lineItemsArray: [{id: 0, desc: "", amount: 0}]
         });
     }
@@ -320,9 +318,8 @@ class Invoice extends React.Component {
     /* Counter for line item array */
     addLineItem() {
         this.setState({
-            lineItemCount: this.state.lineItemCount + 1
+            lineItemsArray: this.state.lineItemsArray.concat([{id: this.state.lineItemsArray.length+1, amount: 0}])
         });
-        this.state.lineItemsArray.push({id: this.state.lineItemCount, amount: 0});
     }
 }
 

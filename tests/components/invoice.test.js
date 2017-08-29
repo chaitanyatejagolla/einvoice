@@ -1,12 +1,15 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import sinon from "sinon";
 import Invoice from '../../src/components/invoice';
 import LineItem from '../../src/components/lineItem';
 import InputLabelGroup from '../../src/components/common/inputLabelGroup.jsx';
 import { Form, FormGroup, ControlLabel, Table, Button, Modal } from 'react-bootstrap';
 
 describe('Running tests on <Invoice /> component', () => { 
-    let wrapper = null;
+    let wrapper = null,
+        renderForm = sinon.spy(),
+        renderPreview = sinon.spy()
 
     beforeEach(() => {
         wrapper = shallow(
@@ -35,25 +38,33 @@ describe('Running tests on <Invoice /> component', () => {
         expect(wrapper.find(Table).length).toEqual(1);
     });
 
-    it("should have a <Table /> component", () => {
-        expect(wrapper.find(Table).length).toEqual(1);
-    });
-  
-    // it('should render children when passed in', () => {
-    //   const wrapper = shallow((
-    //     <Invoice>
-    //       <div>
-    //             <div>
-    //                 {this.renderForm()}
-    //             </div>
-    //             <div>
-    //                 {this.renderPreview()}
-    //             </div>
-    //         </div>
-    //     </Invoice>
-    //   ));
-    //   expect(wrapper.contains(<div className="unique" />)).to.equal(true);
+    // it("should validate ", () => {
+    //     expect(validate("name", "9829")).toEqual(false);
+    //     expect(validate("name", "name")).toEqual(true);
+    //     expect(validate("name", "name@")).toEqual(false);
     // });
+    it('should render children when passed in', () => {
+      const wrapper = shallow((
+        <Invoice>
+          <div>
+                <div>
+                    {renderForm}
+                </div>
+                <div>
+                    {renderPreview}
+                </div>
+            </div>
+        </Invoice>
+      ));
+      expect(wrapper.contains(<div>
+        <div>
+            {renderForm}
+        </div>
+        <div>
+            {renderPreview}
+        </div>
+    </div>)).toEqual(false);
+    });
   
     // it('simulates click events', () => {
     //   const onButtonClick = sinon.spy();

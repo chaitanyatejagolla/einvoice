@@ -16,9 +16,6 @@ describe('Running tests on <FormLabel /> component', () => {
 
     it("should have a <div /> component", () => {
         expect(wrapper.find("div").length).toEqual(1);
-    });
-
-    it("should have a <label /> component", () => {
         expect(wrapper.find("label").length).toEqual(1);
     });
 

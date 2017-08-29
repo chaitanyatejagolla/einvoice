@@ -22,36 +22,7 @@ describe('Running tests on <LineItem /> component', () => {
 
     it('should render one <FormLabel /> components', () => {
         expect(wrapper.find(FormLabel).length).toEqual(1);
-    });
-
-    it('should render two <FormGroup /> components', () => {
+        expect(wrapper.find(FormGroup).length).toEqual(2);
         expect(wrapper.find(FormGroup).length).toEqual(2);
     });
-  
-    it('should render two <FormGroup /> components', () => {
-        expect(wrapper.find(FormGroup).length).toEqual(2);
-    });
-
-    // it('should render children when passed in', () => {
-    //   const wrapper = shallow((
-    //     <Invoice>
-    //       <div>
-    //             <div>
-    //                 {this.renderForm()}
-    //             </div>
-    //             <div>
-    //                 {this.renderPreview()}
-    //             </div>
-    //         </div>
-    //     </Invoice>
-    //   ));
-    //   expect(wrapper.contains(<div className="unique" />)).to.equal(true);
-    // });
-  
-    // it('simulates click events', () => {
-    //   const onButtonClick = sinon.spy();
-    //   const wrapper = shallow(<Foo onButtonClick={onButtonClick} />);
-    //   wrapper.find('button').simulate('click');
-    //   expect(onButtonClick.calledOnce).to.equal(true);
-    // });
   });
