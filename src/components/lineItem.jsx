@@ -23,7 +23,7 @@ class LineItem extends React.Component {
                 <tr>
                     <td>
                         <FormLabel
-                            label={this.props.id+1}
+                            label={this.props.id}
                             className = "col-md-2 col-xs-1"
                         />
                     </td>

@@ -18,7 +18,7 @@ class Invoice extends React.Component {
             totalError: "",
             lineItemValidation: true,
             total: 0,
-            lineItemsArray: [{id: 0, desc: "", amount: 0}]
+            lineItemsArray: [{id: 1, desc: "", amount: 0}]
         };
         this._bind("onChange", "addLineItem", "saveData", "renderForm", "handleLineItemChange", "renderPreview", "handleCloseClick")
     }
@@ -51,7 +51,7 @@ class Invoice extends React.Component {
             let lineItemsUI = [];
             /* Looping through lineItemsArray for getting line item UI components */
             lineItemsUI = this.state.lineItemsArray.map((lineItem, index) =>
-                <LineItem handleLineItemChange={this.handleLineItemChange} key={index} id={index}/>
+                <LineItem handleLineItemChange={this.handleLineItemChange} key={index} id={index+1}/>
             );
 
             return (
@@ -204,7 +204,7 @@ class Invoice extends React.Component {
             totalError: "",
             lineItemValidation: true,
             total: 0,
-            lineItemsArray: [{id: 0, desc: "", amount: 0}]
+            lineItemsArray: [{id: 1, desc: "", amount: 0}]
         });
     }
 
