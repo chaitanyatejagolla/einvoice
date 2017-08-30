@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup } from 'react-bootstrap';
+import { FormGroup, Button, Glyphicon } from 'react-bootstrap';
 import FormLabel from './common/formLabel.jsx';
 import FormInput from './common/formInput.jsx';
 
@@ -14,7 +14,7 @@ class LineItem extends React.Component {
             descError: "",
             amountError: "",
         }
-        this._bind("onChange")
+        this._bind("onChange", "onDelete")
     }
 
     
@@ -33,7 +33,7 @@ class LineItem extends React.Component {
                                 <FormInput
                                     name = "desc"
                                     type = "text"
-                                    className = "col-md-10"
+                                    className = "col-md-11"
                                     onChange = {this.onChange}
                                     value = {this.state.desc}
                                     placeholder = ""
@@ -48,12 +48,21 @@ class LineItem extends React.Component {
                                 <FormInput
                                     name = "amount"
                                     type = "number"
-                                    className = "col-xs-8"
+                                    className = "col-md-11"
                                     onChange = {this.onChange}
                                     value = {this.state.amount}
                                     placeholder = ""
                                     error = {this.state.amountError}
                                 />
+                            </div>
+                        </FormGroup>
+                    </td>
+                    <td>
+                        <FormGroup>
+                            <div className="row">
+                                <div className="col-xs-2">
+                                    <Button onClick={this.onDelete} bsSize="small"><Glyphicon glyph="glyphicon glyphicon-minus" /></Button>
+                                </div>
                             </div>
                         </FormGroup>
                     </td>
@@ -76,6 +85,10 @@ class LineItem extends React.Component {
         } else {
             this.props.handleLineItemChange(this.props.id, this.state.desc, event.target.value, this.validate(event.target.name, event.target.value));
         }
+    }
+
+    onDelete() {
+        this.props.handleLineItemDelete(this.props.id);
     }
 
     /*Common Validation  Method*/

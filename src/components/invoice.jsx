@@ -20,7 +20,7 @@ class Invoice extends React.Component {
             total: 0,
             lineItemsArray: [{id: 1, desc: "", amount: 0}]
         };
-        this._bind("onChange", "addLineItem", "saveData", "renderForm", "handleLineItemChange", "renderPreview", "handleCloseClick")
+        this._bind("onChange", "addLineItem", "saveData", "renderForm", "handleLineItemDelete","handleLineItemChange", "renderPreview", "handleCloseClick")
     }
 
     render () {
@@ -51,7 +51,7 @@ class Invoice extends React.Component {
             let lineItemsUI = [];
             /* Looping through lineItemsArray for getting line item UI components */
             lineItemsUI = this.state.lineItemsArray.map((lineItem, index) =>
-                <LineItem handleLineItemChange={this.handleLineItemChange} key={index} id={index+1}/>
+                <LineItem handleLineItemChange={this.handleLineItemChange} handleLineItemDelete={this.handleLineItemDelete} key={index} id={index+1}/>
             );
 
             return (
@@ -85,9 +85,9 @@ class Invoice extends React.Component {
                     <Table responsive>
                         <thead>
                             <tr>
-                                <th className="col-xs-1">Item #</th>
-                                <th>Description</th>
-                                <th className="col-xs-4">Amount</th>
+                                <th className="col-md-1 col-sm-2 col-xs-1">Item #</th>
+                                <th className="col-md-8 col-sm-7">Description</th>
+                                <th className="col-xs-3">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,21 +103,21 @@ class Invoice extends React.Component {
                     </FormGroup>
                     <FormGroup>
                         <div className="row">
-                            <div className="col-xs-offset-8"> 
-                                <label><strong>TOTAL   ${this.state.total.toFixed(2).toString().slice(0,7)}</strong></label>
+                            <div className="col-md-offset-10 col-xs-offset-9"> 
+                                <label><strong>TOTAL   ${this.state.total.toFixed(2).toString().slice(0,10)}</strong></label>
                             </div>
                         </div>
                     </FormGroup>
                     <FormGroup>
                         <div className="row">
-                            <div className="col-xs-offset-8"> 
+                            <div className="col-md-offset-10 col-xs-offset-9"> 
                                 <label style={errorStyle}>{this.state.totalError}</label>
                             </div>
                         </div>
                     </FormGroup>
                     <FormGroup>
                         <div className="row"> 
-                            <div className="col-xs-offset-8"> 
+                            <div className="col-md-offset-10 col-xs-offset-9"> 
                                 <Button type="submit" className="btn btn-light">SEND</Button>
                             </div>
                         </div>
@@ -296,17 +296,17 @@ class Invoice extends React.Component {
     handleLineItemChange(id, desc, amt, lineItemValidation) {
         let totalAmt = 0;
         let tempArray = this.state.lineItemsArray;
-        this.state.lineItemsArray.forEach(function(amountObj) {
-            if (id === amountObj.id) {
+        tempArray.map((lineItem) => {
+            if (id === lineItem.id) {
                 if (amt === "" || parseFloat(amt) < 0) {
                     amt = 0;
                 }
-                amountObj.amount = amt; 
-                amountObj.desc = desc; 
+                lineItem.amount = amt; 
+                lineItem.desc = desc; 
             }
-            totalAmt += parseFloat(amountObj.amount);
-            
+            totalAmt += parseFloat(lineItem.amount);
         });
+
         this.setState({
             total: totalAmt,
             totalError: totalAmt > 9999999.99 ? "Total cannot be more than 9999999.99" : "",
@@ -315,10 +315,23 @@ class Invoice extends React.Component {
         });
     }
 
+    handleLineItemDelete(id) {
+        let deletedArray = this.state.lineItemsArray;
+        let totalAmt = 0;
+        deletedArray.splice(id-1,1);
+        deletedArray.map((lineItem) => {
+            totalAmt += parseFloat(lineItem.amount);
+        });
+        this.setState({
+            lineItemsArray: deletedArray,
+            total: totalAmt
+        });
+    }
+
     /* Counter for line item array */
     addLineItem() {
         this.setState({
-            lineItemsArray: this.state.lineItemsArray.concat([{id: this.state.lineItemsArray.length+1, amount: 0}])
+            lineItemsArray: this.state.lineItemsArray.concat([{id: this.state.lineItemsArray.length+1,  desc: "", amount: 0}])
         });
     }
 }

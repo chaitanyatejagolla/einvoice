@@ -65,13 +65,8 @@ var response = [];
 					});
 				}
 			}
-			res.setHeader('Content-Type', 'application/json');
-			res.status(200).send(JSON.stringify(response));
 		});
-
-		console.log("in ");
 	} else {
-		response.push({'result' : 'error', 'msg' : 'Please fill required details'});
 		res.setHeader('Content-Type', 'application/json');
 		res.status(200).send(JSON.stringify(response));
 	}
